@@ -18,37 +18,12 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - name: Checkout Repository (Linux/macOS)
-      if: matrix.os != 'windows-latest'
+    # Official Git Checkout, using a custom path to completely bypass the Windows COM8 device name bug!
+    - name: Checkout Repository Code
       uses: actions/checkout@v4
       with:
+        path: source_code
         submodules: recursive
-
-    # 2. Hardcore Bypassing Step for Windows (Completely avoids the broken D:\ drive git virtualization)
-    - name: Custom Zip Extract Checkout (Windows)
-      if: matrix.os == 'windows-latest'
-      shell: pwsh
-      env:
-        GH_REPO: ${{ github.repository }}
-        GH_SHA: ${{ github.sha }}
-      run: |
-        # Download a clean, flat zip snapshot of your code using the specific workflow trigger SHA commit token
-        $zipUrl = "https://github.com"
-        Invoke-WebRequest -Uri $zipUrl -OutFile "source.zip"
-        
-        # FIX: Bypass Expand-Archive entirely by calling the pre-installed 7-Zip engine!
-        & "C:\Program Files\7-Zip\7z.exe" x source.zip -oextracted_root
-        
-        # GitHub names the zipped root folder as "RepositoryName-CommitSHA"
-        $extractedDir = Get-ChildItem -Path "extracted_root" | Select-Object -First 1
-        
-        # Move all your files (main.cpp, Chip8.hpp, CMakeLists.txt) into the root working directory manually
-        Copy-Item -Path "$($extractedDir.FullName)\*" -Destination "." -Recurforce -Recurse
-        
-        # Clean up temporary zip extractions safely
-        Remove-Item -Path "source.zip", "extracted_root" -Recurse -Force
-        Write-Output "Windows files staged without touching the broken git client layer successfully!"
-
 
     # --- PLATFORM SPECIFIC DEPENDENCY SETUPS ---
     
