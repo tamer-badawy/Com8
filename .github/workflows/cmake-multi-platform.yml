@@ -16,12 +16,16 @@ jobs:
       matrix:
         # Multi-platform matrix covering Linux, Mac, and Windows environments
         os: [ubuntu-latest, macos-latest, windows-latest]
+    # GLOBAL DEFENDER SPECIFICATION: Forces every shell step to execute inside your isolated folder
+    defaults:
+      run:
+        working-directory: source_code
 
     steps:
-    # Official Git Checkout, using a custom path to completely bypass the Windows COM8 device name bug!
     - name: Checkout Repository Code
       uses: actions/checkout@v4
       with:
+        clean: true
         path: source_code
         submodules: recursive
 
