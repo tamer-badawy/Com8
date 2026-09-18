@@ -24,20 +24,28 @@ jobs:
       with:
         submodules: recursive
 
-    # 2. Manual, custom checkout for Windows to completely bypass the git init bug
-    - name: Custom Checkout (Windows)
+    # 2. Hardcore Bypassing Step for Windows (Completely avoids the broken D:\ drive git virtualization)
+    - name: Custom Zip Extract Checkout (Windows)
       if: matrix.os == 'windows-latest'
       shell: pwsh
       run: |
-        # Force set the global safe directory path tracking parameters
-        git config --global --add safe.directory D:/a/Com8/Com8
+        # Download a clean, flat zip snapshot of your code using the specific workflow trigger SHA commit token
+        $zipUrl = "https://github.com{{ github.repository }}/archive/${{ github.sha }}.zip"
+        Invoke-WebRequest -Uri $zipUrl -OutFile "source.zip"
         
-        # Clone the repo directly into the workspace root instead of initializing inside it
-        git clone https://github.com{{ github.repository }}.git .
+        # Extract the archive into a separate workspace directory segment layer
+        Expand-Archive -Path "source.zip" -DestinationPath "extracted_root"
         
-        # If your action run is triggered by a pull request or specific branch, match the tracking commit head
-        git checkout ${{ github.sha }}
-        git submodule update --init --recursive
+        # GitHub names the zipped root folder as "RepositoryName-CommitSHA"
+        $extractedDir = Get-ChildItem -Path "extracted_root" | Select-Object -First 1
+        
+        # Move all your files (main.cpp, Chip8.hpp, CMakeLists.txt) into the root working directory manually
+        Copy-Item -Path "$($extractedDir.FullName)\*" -Destination "." -Recurforce -Recurse
+        
+        # Clean up temporary zip extractions safely
+        Remove-Item -Path "source.zip", "extracted_root" -Recurse -Force
+        Write-Output "Windows files staged without touching the broken git client layer successfully!"
+
 
     # --- PLATFORM SPECIFIC DEPENDENCY SETUPS ---
     
