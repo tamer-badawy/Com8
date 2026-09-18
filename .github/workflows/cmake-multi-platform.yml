@@ -19,14 +19,14 @@ jobs:
     # GLOBAL DEFENDER SPECIFICATION: Forces every shell step to execute inside your isolated folder
     defaults:
       run:
-        working-directory: source_code
+        working-directory: ${{ github.workspace }}_build
 
     steps:
     - name: Checkout Repository Code
       uses: actions/checkout@v4
       with:
         clean: true
-        path: source_code
+        path: ${{ github.workspace }}_build
         submodules: recursive
 
     # --- PLATFORM SPECIFIC DEPENDENCY SETUPS ---
