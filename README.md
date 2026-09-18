@@ -1,8 +1,8 @@
 # 🚀 Com8 | A High-Performance C++ CHIP-8 Virtual Hardware Emulator
 
-[![C++ Standard](https://shields.io)](https://cppreference.com)
-[![Framework](https://shields.io)](https://raylib.com)
-[![License](https://shields.io)](LICENSE)
+![C++](https://img.shields.io/badge/C++-17-blue?logo=cplusplus)
+![Raylib](https://img.shields.io/badge/Raylib-6.0-black?logo=raylib)
+![Apache License](https://img.shields.io/badge/Apache-2.0-red?logo=apache)
 
 **Com8** is a clean, modular CHIP-8 interpreter engine built from scratch using **Modern C++** and **Raylib** for multimedia rendering. Inspired by the minimalism of classic MS-DOS `.COM` executable memory layouts and low-level `ORG 100h` systems programming architectures, this application emulates a virtual CPU, call stack tracking, memory arrays, and hardware registers entirely in software.
 
