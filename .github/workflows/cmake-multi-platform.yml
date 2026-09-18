@@ -36,8 +36,8 @@ jobs:
         $zipUrl = "https://github.com"
         Invoke-WebRequest -Uri $zipUrl -OutFile "source.zip"
         
-        # Extract the archive into a separate workspace directory segment layer
-        Expand-Archive -Path "source.zip" -DestinationPath "extracted_root"
+        # FIX: Bypass Expand-Archive entirely by calling the pre-installed 7-Zip engine!
+        & "C:\Program Files\7-Zip\7z.exe" x source.zip -oextracted_root
         
         # GitHub names the zipped root folder as "RepositoryName-CommitSHA"
         $extractedDir = Get-ChildItem -Path "extracted_root" | Select-Object -First 1
