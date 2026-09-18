@@ -11,6 +11,11 @@ jobs:
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+
+    permissions:
+      contents: write
+      discussions: write # Optional: needed if you want linked release discussions
+    
     
     strategy:
       fail-fast: false
