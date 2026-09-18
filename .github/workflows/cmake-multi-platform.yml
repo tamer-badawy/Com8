@@ -28,9 +28,12 @@ jobs:
     - name: Custom Zip Extract Checkout (Windows)
       if: matrix.os == 'windows-latest'
       shell: pwsh
+      env:
+        GH_REPO: ${{ github.repository }}
+        GH_SHA: ${{ github.sha }}
       run: |
         # Download a clean, flat zip snapshot of your code using the specific workflow trigger SHA commit token
-        $zipUrl = "https://github.com${{ github.repository }}/archive/${{ github.sha }}.zip"
+        $zipUrl = "https://github.com"
         Invoke-WebRequest -Uri $zipUrl -OutFile "source.zip"
         
         # Extract the archive into a separate workspace directory segment layer
