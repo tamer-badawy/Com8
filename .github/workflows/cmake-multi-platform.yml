@@ -20,6 +20,9 @@ jobs:
     steps:
     - name: Checkout Repository Code
       uses: actions/checkout@v4
+      with:
+        clean: true
+        submodules: recursive
 
     # --- PLATFORM SPECIFIC DEPENDENCY SETUPS ---
     
@@ -28,7 +31,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+        sudo apt-get install -y libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
 
     # 2. Windows needs the MSVC compiler environment set up (handled natively by GitHub runners)
     - name: Enable MSVC Developer Command Prompt
