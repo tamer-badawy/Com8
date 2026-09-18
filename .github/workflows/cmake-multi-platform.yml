@@ -3,6 +3,7 @@ name: Multi-Platform Build CI
 on:
   push:
     branches: [ "master", "main" ]
+    tags: [ "v*" ] # Kicks off the automated release whenever you push a tag like v1.0.0
   pull_request:
     branches: [ "master", "main" ]
 
@@ -52,3 +53,26 @@ jobs:
           exit 1
         fi
         echo "Unix-based target compiled successfully!"
+
+    # 5. Native target compression packaging scripts
+    - name: Package Linux Binary Asset
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        mkdir -p dist
+        cp build/Com8 dist/
+        cd dist && tar -czf com8-linux-x64.tar.gz Com8
+
+    - name: Package macOS Binary Asset
+      if: matrix.os == 'macos-latest'
+      run: |
+        mkdir -p dist
+        cp build/Com8 dist/
+        cd dist && tar -czf com8-macos-universal.tar.gz Com8
+
+    # 6. Public release generation via the official action platform hook
+    - name: Create Official GitHub Release Distribution
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/com8-*
+        generate_release_notes: true
